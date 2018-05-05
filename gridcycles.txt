@@ -1,0 +1,9 @@
+I just stumbled upon this partly by accident
+I had wanted to do some work on roating layers of grids (for moiré) but then tryed out the trails & saw some potential
+I was actually just trying to improve my technique for drawing a grid & needed a simple sketch to experiment
+I then also started looking into scaling & rotating
+Then using the cycling angle to calculate some other values (after initially messing around with mouseX)
+
+The potential would seem to lie in the ratios of frequencies between the various driving waveforms.
+
+RB 23:24 05.05.18
