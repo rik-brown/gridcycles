@@ -6,22 +6,25 @@ Draw first row at TOP EDGE of allocated space
 Draw last row at BOTTOM EDGE of allocated space
 */
 
+boolean iso = true;
+
 int rows = 5;
 int cols = 5;
-float canvasScale = 0.5; // 1.0 = use 100% of canvas
+float widthScale = 0.5;  // 1.0 = use 100% of canvas
+float heightScale; // 1.0 = use 100% of canvas
+float radiusScale = 1.0; // 1.0 = 100% of colWidth/rowHeight
+
 float colWidth, rowHeight;
 float radiusX, radiusY;
-float radiusScale;
 PVector position;
-boolean iso = true;
+
 
 
 void setup () {
 size(800,800);
-//radius = width * 0.1;
-radiusScale = 1.0;
+colorMode(HSB,366,255,255);
 background(0);
-fill(255, 128);
+fill(255);
 noStroke();
 ellipseMode(RADIUS);
 }
@@ -29,40 +32,44 @@ ellipseMode(RADIUS);
 
 void draw() {
   //background(0);
-  //fill(frameCount%255);
+  //fill(map(frameCount%120, 1, 120, 0, 255));
   pushMatrix();
   translate(width*0.5, height*0.5);
-  float frameAngle = radians(frameCount%360);
-  //rotate(frameAngle);
+  float frameAngle = radians((frameCount*0.5)%360);
+  rotate(frameAngle);
   //translate(0, 0); // This is a mistake! It means "translate 0 pixels in no direction"
   translate(-width*0.5, -height*0.5); // is the correct way to translate back to the origin (but that would've been less interesting!)
-  
-  //canvasScale = map(mouseX, 0, width, 0, 2);
-  //canvasScale = map(sin(frameAngle*2), -1, 1, 0.5, 2.0);
+  widthScale = map(sin(frameAngle*2), -1, 1, 0.5, 2.0);
+  //widthScale = map(mouseX, 0, width, 0, 2);
+  heightScale = map(mouseX, 0, width, 0, 2);
+  if (iso) {heightScale = widthScale * sqrt(3) * 0.5;}
   //rows = int(map(mouseY,0,height,1,100));
   //rows = int(map(cos(frameAngle), -1, 1, 1, 10));
   //cols = rows;
   
   
-  //radiusScale = map(sin(frameAngle*3), -1, 1, 0.05, 0.8);
-  //fill(map(sin(frameAngle), -1, 1, 0, 255));
+  radiusScale = map(sin(frameAngle*3), -1, 1, 0.5, 1.0);
+  fill(map(sin(frameAngle), -1, 1, 0, 255));
   //stroke(map(cos(frameAngle), -1, 1, 0, 255));
   
   
   
-  float gridWidth = width * canvasScale;
-  float gridHeight = height * canvasScale;
+  float gridWidth = width * widthScale;
+  float gridHeight = height * heightScale;
   float xOffset = (width-gridWidth)*0.5;
   float yOffset = (height-gridHeight)*0.5;
-  noFill();
-  stroke(255);
-  rect(xOffset, yOffset, gridWidth, gridHeight);
+  //noFill();
+  //stroke(255,4);
+  //rect(xOffset, yOffset, gridWidth, gridHeight);
   //fill(255);
   colWidth = gridWidth/cols;
-  if (iso) {rowHeight = gridHeight/rows * sqrt(3) * 0.5;} else {rowHeight = gridHeight/rows;}
+  //if (iso) {rowHeight = gridHeight/rows * sqrt(3) * 0.5;} else {rowHeight = gridHeight/rows;}
+  rowHeight = gridHeight/rows;
+  
   
   radiusX = colWidth*0.5*radiusScale;
   radiusY = (gridHeight/rows)*0.5*radiusScale;
+  if (iso) {radiusY = radiusX;}
    
   for(int row = 1; row<=rows; row++) {
     // row will take the values 0, 1, 2 (upto rows-1)
@@ -75,7 +82,7 @@ void draw() {
       //float ypos = map(row, 0, rows-1, 0, gridHeight) + yOffset;
       float xpos = ((col*2)-1)*colWidth*0.5 + xOffset;
       float ypos = ((row*2)-1)*rowHeight*0.5  + yOffset;
-      if (iso && isOdd(row)) {xpos += colWidth*0.5;}
+      if (iso && isEven(row)) {xpos += colWidth*0.5;}
       position = new PVector(xpos, ypos);
       ellipse(position.x, position.y, radiusX,radiusY);
       
